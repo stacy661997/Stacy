@@ -2,11 +2,15 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>GPTI 大A股民性格测试</title>
+<title>GPTI 大 A 股民性格测试</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta property="og:title" content="GPTI 大 A 股民性格测试">
+<meta property="og:description" content="MBTI 已经过时，股市专治各种不服">
+<meta property="og:image" content="images/cover.jpg">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: "SF Mono", monospace; background: #0a0a0a; color: #e0e0e0; padding: 20px 16px; max-width: 680px; margin: 0 auto; line-height: 1.7; }
+@media (max-width: 480px) { body { padding: 16px 12px; font-size: 14px; } h1 { font-size: 22px; } .cover-img { max-width: 280px; } }
 h1 { font-size: 26px; text-align: center; margin-bottom: 8px; color: #ff3c50; }
 .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 20px; }
 .cover-img { width: 100%; max-width: 320px; margin: 0 auto 30px; display: block; border-radius: 12px; }
@@ -20,13 +24,16 @@ h1 { font-size: 26px; text-align: center; margin-bottom: 8px; color: #ff3c50; }
 #type { font-size: 22px; color: #ff3c50; margin-bottom: 8px; }
 #score { color: #999; font-size: 14px; margin-bottom: 16px; }
 #desc { color: #ccc; font-size: 15px; margin-bottom: 20px; }
+.joke { color: #666; font-size: 11px; margin-top: 15px; font-style: italic; }
 button { border: none; background: #ff3c50; color: #fff; padding: 12px 22px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-top: 10px; width: 100%; }
 .retry-btn { background: #333; }
-.footer { margin-top: 50px; font-size: 12px; color: #555; text-align: center; }
+.share-btn { background: #ff3c50; margin-top: 15px; }
+.share-area { margin-top: 20px; }
+.footer { margin-top: 50px; font-size: 12px; color: #555; text-align: center; line-height: 1.6; }
 </style>
 </head>
 <body>
-<h1>GPTI 大A股民性格测试</h1>
+<h1>GPTI 大 A 股民性格测试</h1>
 <div class="subtitle">MBTI 已经过时，股市专治各种不服</div>
 <img src="images/cover.jpg" class="cover-img">
 <div id="questions"></div>
@@ -35,21 +42,26 @@ button { border: none; background: #ff3c50; color: #fff; padding: 12px 22px; bor
 <div id="type"></div>
 <div id="score"></div>
 <div id="desc"></div>
-<button onclick="location.reload()">再测一次</button>
+<div class="joke">Just a joke，谁没亏过呢，请勿玻璃心，不服 V 我 50 哈哈哈。苟富贵，勿相忘~</div>
+<div class="share-area" id="shareArea" style="display:none;">
+<button class="share-btn" onclick="shareWechat()">📋 复制分享文案</button>
+<button class="share-btn" onclick="shareXiaohongshu()">📕 分享到小红书</button>
 </div>
-<div class="footer">本测试纯属娱乐，不构成任何投资建议</div>
+<button class="retry-btn" onclick="location.reload()">🔄 再测一次</button>
+</div>
+<div class="footer">本测试纯属娱乐，不构成任何投资建议<br>股市有风险，入市需谨慎，请理性投资，盈亏自负。</div>
 <script>
 const questions = [
-{q: "1. 持仓浮亏8%，你通常会怎么操作？", options: ["A:跌成这样还说啥了，割肉离场保平安","B:再苟两天，万一绝地求生两极反转呢？","C:挑衅我！敢跌我就敢补，越跌越兴奋！","D:赚钱嘛靠缘分的啦~"]},
-{q: "2. 手里股票突然猛拉接近涨停板，你会如何操作？", options: ["A:见好就收，落袋才是真钱","B:格局打开，坐等连板起飞","C:手速拉满，加仓！","D:内心毫无波动，甚至有点子想笑"]},
-{q: "3. 平时你选股主要看啥方面？", options: ["A:技术形态说话，不搞玄学","B:热点板块才是王道，手慢汤都该喝不上了","C:听听消息练练盘感，跟着感觉走","D:看好就拿稳，长期主义"]},
-{q: "4. 收盘之后你一般会做什么？", options: ["A:认真复盘，知错就改才是好宝宝","B:随便刷会儿行情，老法师又讲课了","C:连夜研究，明天又是一条好汉","D:关机摆烂，股市爱谁谁"]},
-{q: "5. 朋友给你推一只强势股，你会如何反应？", options: ["A:还是谨慎点吧，这家伙自己水平也不咋滴是不是坑我呢","B:可以试试诶，万一赚了呢","C:好兄弟一生一起走，信任拉满就是干","D:少CPU我，我命由我不由天"]},
-{q: "6. 连续做错几笔亏了，你会怎么想？", options: ["A:停停停，再玩天台挤不下了","B:降低频率，找机会脉动回来呗","C:越亏越勇，失败乃成功之母！","D:躺了，以后200块以上的活动憋喊我"]},
-{q: "7. 一只票你一般拿多久？", options: ["A:有赚就跑，绝不恋战","B:先拿它一阵子，看盘面行事","C:超短快进快出，不追求刺激玩什么大A","D:拿成传家宝，陪伴才是最长情的告白"]},
-{q: "8. 大盘突然暴跌，快要跌破支撑位了。你第一反应？", options: ["A:先跑再说，咱是余华老师著作忠实读者","B:淡定观望，不着急操作","C:暴跌就是机会，我要抄底！！！","D:毁灭吧，大A这个渣男/女，累觉不爱"]},
-{q: "9. 卖飞了，票还在猛涨，你会怎么想？", options: ["A:赚米就行，不去纠结鱼尾","B:拍断大腿，争取下次沉住气","C:心态小崩，没事尝试追高接回，还能吃到几个点","D:知足常乐，别人赚多少雨我无瓜"]},
-{q: "10. 单只票仓位你一般怎么放？", options: ["A:分散投资，鸡蛋不能放在一个篮子里","B:两三只重仓，稳中求进","C:一把梭哈，输了天桥贴膜，赢了会所嫩模","D:啊，还有调仓的事？？？"]}
+{q: "1. 持仓浮亏 8%，你通常会怎么操作？", options: ["A:跌成这样还说啥了，割肉离场保平安😮‍💨","B:再苟两天，万一绝地求生两极反转呢？🤔","C:挑衅我！敢跌我就敢补，越跌越兴奋！😤","D:赚钱嘛靠缘分的啦~😴"]},
+{q: "2. 手里股票突然猛拉接近涨停板，你会如何操作？", options: ["A:见好就收，落袋才是真钱🤑","B:格局打开，坐等连板起飞","C:手速拉满，加仓！😱","D:内心毫无波动，甚至有点子想笑😐"]},
+{q: "3. 平时你选股主要看啥方面？", options: ["A:技术形态说话，不搞玄学📊","B:热点板块才是王道，手慢汤都该喝不上了，passion🔥","C:听听消息练练盘感，跟着感觉走~🗣️","D:看好就拿稳，长期主义📜"]},
+{q: "4. 收盘之后你一般会做什么？", options: ["A:认真复盘，知错就改才是好宝宝🧾","B:随便刷会儿行情，老法师又讲课了👀","C:连夜研究，明天又是一条好汉🔍","D:关机摆烂，股市爱谁谁🔌"]},
+{q: "5. 朋友给你推一只强势股，你会如何反应？", options: ["A:还是谨慎点吧，这家伙自己水平也不咋滴是不是坑我呢🧐","B:可以试试诶，万一赚了呢😯","C:好兄弟一生一起走，信任拉满就是干","D:少 CPU 我，我命由我不由天🙅‍♀️"]},
+{q: "6. 连续做错几笔亏了，你会怎么想？", options: ["A:停停停，再玩天台挤不下了🛑","B:降低频率，找机会脉动回来呗🐌","C:越亏越勇，失败乃成功之母！😡","D:躺了，以后 200 块以上的活动憋喊我🛌"]},
+{q: "7. 一只票你一般拿多久？", options: ["A:有赚就跑，绝不恋战⏳","B:先拿它一阵子，看盘面行事🗓️","C:超短快进快出，不追求刺激玩什么大 A⚡","D:拿成传家宝，陪伴才是最长情的告白🗿"]},
+{q: "8. 大盘突然暴跌，快要跌破支撑位了。你第一反应？", options: ["A:先跑再说，咱是余华老师著作忠实读者😰","B:淡定观望，不着急操作🧐","C:暴跌就是机会，我要抄底！！！😤","D:毁灭吧，大 A 这个渣男/女，累觉不爱😑"]},
+{q: "9. 卖飞了，票还在猛涨，你会怎么想？", options: ["A:赚米就行，不去纠结鱼尾🤏","B:拍断大腿，争取下次沉住气😩","C:心态小崩，没事尝试追高接回，还能吃到几个点😫","D:知足常乐，别人赚多少雨我无瓜😎"]},
+{q: "10. 单只票仓位你一般怎么放？", options: ["A:分散投资，鸡蛋不能放在一个篮子里🥚","B:两三只重仓，稳中求进⚖️","C:一把梭哈，输了天桥贴膜，赢了会所嫩模💥","D:啊，还有调仓的事？？？🛡️"]}
 ];
 const container = document.getElementById('questions');
 questions.forEach((item, idx) => {
@@ -92,8 +104,40 @@ document.getElementById('submitBtn').onclick = () => {
  document.getElementById('personaImage').src = 'images/' + img;
  document.getElementById('personaImage').style.display = 'block';
  document.getElementById('result').style.display = 'block';
- window.scrollTo(0, document.getElementById('result').offsetTop);
+ document.getElementById('shareArea').style.display = 'block';
+ window.scrollTo(0, document.getElementById('result').offsetTop - 20);
 };
+function shareWechat() {
+ const type = document.getElementById('type').innerText;
+ const desc = document.getElementById('desc').innerText;
+ const text = '我测出来是：' + type + '\n' + desc + '\n\nGPTI 大 A 股民性格测试，快来测测你是什么股神！\nhttps://stacy661997.github.io/Stacy/';
+ navigator.clipboard.writeText(text).then(() => {
+  alert('✅ 已复制！\n\n1. 打开微信\n2. 粘贴到聊天或朋友圈\n3. 发送！');
+ }).catch(() => {
+  prompt('长按复制：', text);
+ });
+}
+function shareXiaohongshu() {
+ const type = document.getElementById('type').innerText;
+ const desc = document.getElementById('desc').innerText;
+ const text = '📊 GPTI 大 A 股民性格测试\n\n我测出来是：' + type + '\n' + desc + '\n\n#股民 #A 股 #性格测试 #MBTI #投资';
+ navigator.clipboard.writeText(text).then(() => {
+  alert('✅ 已复制！\n\n1. 打开小红书\n2. 点击发布\n3. 粘贴文案\n4. 配上你的结果截图！');
+ }).catch(() => {
+  prompt('长按复制：', text);
+ });
+}
+if (navigator.share) {
+ const shareBtn = document.createElement('button');
+ shareBtn.className = 'share-btn';
+ shareBtn.innerText = '📤 分享';
+ shareBtn.onclick = () => {
+  const type = document.getElementById('type').innerText;
+  const desc = document.getElementById('desc').innerText;
+  navigator.share({ title: 'GPTI 大 A 股民性格测试', text: '我测出来是：' + type + '\n' + desc, url: 'https://stacy661997.github.io/Stacy/' });
+ };
+ document.getElementById('shareArea').appendChild(shareBtn);
+}
 </script>
 </body>
 </html>

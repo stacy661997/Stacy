@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>GPTI 大A股民性格测试</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "SF Mono", monospace; background: #0a0a0a; color: #e0e0e0; padding: 20px 16px; max-width: 680px; margin: 0 auto; line-height: 1.7; }
+h1 { font-size: 26px; text-align: center; margin-bottom: 8px; color: #ff3c50; }
+.subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 20px; }
+.cover-img { width: 100%; max-width: 320px; margin: 0 auto 30px; display: block; border-radius: 12px; }
+.question { margin-bottom: 30px; }
+.question h2 { font-size: 16px; color: #f0f0f0; margin-bottom: 12px; }
+.option { display: block; background: #111; border: 1px solid #333; border-radius: 6px; padding: 12px 14px; margin: 8px 0; cursor: pointer; }
+.option:hover { border-color: #666; }
+.option.selected { border-color: #ff3c50; color: #ff3c50; }
+#result { display: none; margin-top: 40px; padding: 20px; background: #121212; border-radius: 10px; text-align: center; }
+.persona-img { width: 100%; max-width: 280px; margin: 0 auto 20px; border-radius: 10px; }
+#type { font-size: 22px; color: #ff3c50; margin-bottom: 8px; }
+#score { color: #999; font-size: 14px; margin-bottom: 16px; }
+#desc { color: #ccc; font-size: 15px; margin-bottom: 20px; }
+button { border: none; background: #ff3c50; color: #fff; padding: 12px 22px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-top: 10px; width: 100%; }
+.retry-btn { background: #333; }
+.footer { margin-top: 50px; font-size: 12px; color: #555; text-align: center; }
+</style>
+</head>
+<body>
+<h1>GPTI 大A股民性格测试</h1>
+<div class="subtitle">MBTI 已经过时，股市专治各种不服</div>
+<img src="images/cover.jpg" class="cover-img">
+<div id="questions"></div>
+<div id="result">
+<img id="personaImage" class="persona-img" style="display:none;">
+<div id="type"></div>
+<div id="score"></div>
+<div id="desc"></div>
+<button onclick="location.reload()">再测一次</button>
+</div>
+<div class="footer">本测试纯属娱乐，不构成任何投资建议</div>
+<script>
+const questions = [
+{q: "1. 持仓浮亏8%，你通常会怎么操作？", options: ["A:跌成这样还说啥了，割肉离场保平安","B:再苟两天，万一绝地求生两极反转呢？","C:挑衅我！敢跌我就敢补，越跌越兴奋！","D:赚钱嘛靠缘分的啦~"]},
+{q: "2. 手里股票突然猛拉接近涨停板，你会如何操作？", options: ["A:见好就收，落袋才是真钱","B:格局打开，坐等连板起飞","C:手速拉满，加仓！","D:内心毫无波动，甚至有点子想笑"]},
+{q: "3. 平时你选股主要看啥方面？", options: ["A:技术形态说话，不搞玄学","B:热点板块才是王道，手慢汤都该喝不上了","C:听听消息练练盘感，跟着感觉走","D:看好就拿稳，长期主义"]},
+{q: "4. 收盘之后你一般会做什么？", options: ["A:认真复盘，知错就改才是好宝宝","B:随便刷会儿行情，老法师又讲课了","C:连夜研究，明天又是一条好汉","D:关机摆烂，股市爱谁谁"]},
+{q: "5. 朋友给你推一只强势股，你会如何反应？", options: ["A:还是谨慎点吧，这家伙自己水平也不咋滴是不是坑我呢","B:可以试试诶，万一赚了呢","C:好兄弟一生一起走，信任拉满就是干","D:少CPU我，我命由我不由天"]},
+{q: "6. 连续做错几笔亏了，你会怎么想？", options: ["A:停停停，再玩天台挤不下了","B:降低频率，找机会脉动回来呗","C:越亏越勇，失败乃成功之母！","D:躺了，以后200块以上的活动憋喊我"]},
+{q: "7. 一只票你一般拿多久？", options: ["A:有赚就跑，绝不恋战","B:先拿它一阵子，看盘面行事","C:超短快进快出，不追求刺激玩什么大A","D:拿成传家宝，陪伴才是最长情的告白"]},
+{q: "8. 大盘突然暴跌，快要跌破支撑位了。你第一反应？", options: ["A:先跑再说，咱是余华老师著作忠实读者","B:淡定观望，不着急操作","C:暴跌就是机会，我要抄底！！！","D:毁灭吧，大A这个渣男/女，累觉不爱"]},
+{q: "9. 卖飞了，票还在猛涨，你会怎么想？", options: ["A:赚米就行，不去纠结鱼尾","B:拍断大腿，争取下次沉住气","C:心态小崩，没事尝试追高接回，还能吃到几个点","D:知足常乐，别人赚多少雨我无瓜"]},
+{q: "10. 单只票仓位你一般怎么放？", options: ["A:分散投资，鸡蛋不能放在一个篮子里","B:两三只重仓，稳中求进","C:一把梭哈，输了天桥贴膜，赢了会所嫩模","D:啊，还有调仓的事？？？"]}
+];
+const container = document.getElementById('questions');
+questions.forEach((item, idx) => {
+ const div = document.createElement('div');
+ div.className = 'question';
+ div.innerHTML = '<h2>' + item.q + '</h2>' + item.options.map((opt, i) => '<label class="option" data-q="' + (idx+1) + '" data-v="' + opt[0] + '">' + opt.substring(2) + '</label>').join('');
+ container.appendChild(div);
+});
+const btn = document.createElement('button');
+btn.id = 'submitBtn';
+btn.innerText = '生成我的股民人格';
+container.appendChild(btn);
+const answers = {};
+document.querySelectorAll('.option').forEach(opt => {
+ opt.onclick = () => {
+  const q = opt.dataset.q;
+  answers[q] = opt.dataset.v;
+  document.querySelectorAll('[data-q="' + q + '"]').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+ };
+});
+document.getElementById('submitBtn').onclick = () => {
+ if (Object.keys(answers).length < 10) { alert('还有' + (10-Object.keys(answers).length) + '道题没答完'); return; }
+ const count = {A:0,B:0,C:0,D:0};
+ for (let k in answers) count[answers[k]]++;
+ const A=count.A,B=count.B,C=count.C,D=count.D;
+ let type,desc,img;
+ if (A>=5 && A>B && A>C && A>D) { type='ACE 股神'; desc='思路清晰、知行合一、懂风控，是市场里极少数能稳定赚钱的理性选手。'; img='ace_god.jpg'; }
+ else if (B>=4 && B>C && B>D) { type='BULL 嘴硬牛'; desc='心态还行但容易犹豫，卖飞常有、被套常来，常年在过山车上下不来。'; img='bull_stubborn.jpg'; }
+ else if (C>=4 && C>B && C>D) { type='CRAZY 梭哈战神'; desc='敢冲敢重仓，波动极大，不是在暴赚，就是在归零的边缘疯狂试探。'; img='crazy_warrior.jpg'; }
+ else if (D>=5 && D>A && D>B && D>C) { type='DEAD 躺平佛'; desc='不看不动不操作，涨跌全凭大盘心情，主打一个摆烂到天荒地老。'; img='dead_layflat.jpg'; }
+ else if (B+D>=7 && A<=2) { type='EXPERIENCED 资深老韭菜'; desc='道理全懂、经验拉满，就是管不住手，在被套和解套之间反复轮回。'; img='experienced_leek.jpg'; }
+ else if (C+B>=7 && A<=2) { type='FRENZY 狂热投机者'; desc='只做热点跟情绪，节奏快、胆子大，赚得刺激亏得也相当干脆。'; img='frenzy_speculator.jpg'; }
+ else if (C>=3 && B>=3 && A<=1) { type='GAMBLER 短线赌徒'; desc='手痒就想交易，越亏越想回本，一顿操作猛如虎，一看收益二百五。'; img='gambler_short.jpg'; }
+ else if (A+D>=7 && C<=2) { type='HERITAGE 价值死忠粉'; desc='不信短线只信逻辑，长期持有不折腾，耐心拉满，坐等时间给回报。'; img='heritage_value.jpg'; }
+ else { type='普通股民'; desc='时而清醒时而疯，赚赚亏亏起伏不定，在成熟与上头之间反复横跳。'; img='default.jpg'; }
+ document.getElementById('type').innerText = type;
+ document.getElementById('score').innerText = '匹配度 ' + Math.round(Math.max(A,B,C,D)*10) + '%';
+ document.getElementById('desc').innerText = desc;
+ document.getElementById('personaImage').src = 'images/' + img;
+ document.getElementById('personaImage').style.display = 'block';
+ document.getElementById('result').style.display = 'block';
+ window.scrollTo(0, document.getElementById('result').offsetTop);
+};
+</script>
+</body>
+</html>
